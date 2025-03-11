@@ -3,8 +3,11 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
+import * as fs from 'fs';
+import * as path from 'path';
 
-describe('AppController (e2e)', () => {
+
+describe('HelloController (e2e)', () => {
   let app: INestApplication<App>;
 
   beforeEach(async () => {
@@ -16,10 +19,17 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/hello (GET)', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/hello')
       .expect(200)
       .expect('Hello World!');
+  });
+
+  it('/weather (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/weather')
+      .expect(200)
+      .expect(fs.readFileSync(path.resolve('src/service/weather/mockdata.json')).toString());
   });
 });
